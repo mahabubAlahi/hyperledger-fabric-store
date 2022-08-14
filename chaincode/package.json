@@ -1,0 +1,23 @@
+{
+  "name": "chaincode",
+  "version": "1.0.0",
+  "description": "hyperledger-fabric-store",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/mahabubAlahi/hyperledger-fabric-store.git"
+  },
+  "author": "Mahabub Alahi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mahabubAlahi/hyperledger-fabric-store/issues"
+  },
+  "homepage": "https://github.com/mahabubAlahi/hyperledger-fabric-store#readme",
+  "dependencies": {
+    "fabric-contract-api": "^2.2.3",
+    "fabric-shim": "^2.2.3"
+  }
+}
