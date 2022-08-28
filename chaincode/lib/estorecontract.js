@@ -37,6 +37,18 @@ const Product = require('./product.js');
 
         return products;
     }
+
+    async releaseProduct(ctx, vendor, name, price, owner, bought) {
+        // Create a composite key 'PROD{vendor}{name}' for this product.
+        let key = ctx.stub.createCompositeKey('PROD', [vendor, name]);
+        // Create a new product object with the input data.
+        const product = new Product(vendor, name, price, owner, bought);
+
+        // Save the product in the datastore.
+        await ctx.stub.putState(key, Buffer.from(JSON.stringify(product)));
+
+        return product;
+    }
  }
 
  module.exports = EStoreContract;
