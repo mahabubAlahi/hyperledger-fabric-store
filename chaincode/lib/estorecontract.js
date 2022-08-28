@@ -75,6 +75,40 @@ const Product = require('./product.js');
 
         return product;
     }
+
+    async viewProduct(ctx, vendor, name) {
+        // Retrieve the product document from the data store based on its vendor and name.
+        const key = ctx.stub.createCompositeKey('PROD', [vendor, name]);
+        const productAsBytes = await ctx.stub.getState(key);
+        
+        // Check whether the product exists.
+        if (!productAsBytes || productAsBytes.length === 0) {
+            throw new Error(`${key} does not exist`);
+        }
+
+        // Return the product information.
+        return productAsBytes.toString();
+    }
+
+    async viewUnsoldProducts(ctx) {
+        // Retrieve all products stored in the data store.
+        const results = [];
+        for await (const result of ctx.stub.getStateByPartialCompositeKey('PROD', [])) {
+            const strValue = Buffer.from(result.value).toString('utf8');            
+            try {
+                let product = Product.deserialize(JSON.parse(strValue));
+
+                // Only include those products that haven't been bought yet.
+                if (!product.getIsBought()) {
+                    results.push(product);
+                }
+            } catch (error) {
+                throw error;
+            }
+        }
+
+        return results;
+    }
  }
 
  module.exports = EStoreContract;
