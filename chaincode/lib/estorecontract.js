@@ -12,6 +12,10 @@ const Product = require('./product.js');
 
  class EStoreContract extends Contract {
 
+     /**
+     * Initialize the ledger with a few products to start with.
+     * @param {Context} ctx the transaction context.
+     */
     async initLedger(ctx) {
         const products = [
             {
@@ -38,6 +42,15 @@ const Product = require('./product.js');
         return products;
     }
 
+    /**
+     * Release a new product into the store.
+     * @param {Context} ctx The transaction context
+     * @param {String} vendor The vendor for this product.
+     * @param {String} name The name of this product.
+     * @param {String} price The product price
+     * @param {String} owner The owner of the product. If unbought, this field should be the same as the vendor.
+     * @param {Boolean} bought Whether this product has been bought yet.
+     */
     async releaseProduct(ctx, vendor, name, price, owner, bought) {
         // Create a composite key 'PROD{vendor}{name}' for this product.
         let key = ctx.stub.createCompositeKey('PROD', [vendor, name]);
@@ -50,6 +63,14 @@ const Product = require('./product.js');
         return product;
     }
 
+    /**
+     * Buy a product from the store. The product must exist in the store first
+     * and be unbought.
+     * @param {String} ctx The transaction context.
+     * @param {String} vendor The product vendor.
+     * @param {String} name The product name.
+     * @param {String} newOwner The new owner for the product.
+     */
     async buyProduct(ctx, vendor, name, newOwner) {
         // Retrieve the product from the store based on its vendor and name.
         const key = ctx.stub.createCompositeKey('PROD', [vendor, name]);
@@ -76,6 +97,12 @@ const Product = require('./product.js');
         return product;
     }
 
+    /**
+     * Retrieve information about a product.
+     * @param {String} ctx The transaction context.
+     * @param {String} vendor The product vendor.
+     * @param {String} name The product name.
+     */
     async viewProduct(ctx, vendor, name) {
         // Retrieve the product document from the data store based on its vendor and name.
         const key = ctx.stub.createCompositeKey('PROD', [vendor, name]);
@@ -90,6 +117,10 @@ const Product = require('./product.js');
         return productAsBytes.toString();
     }
 
+    /**
+     * View all unsold products in the store.
+     * @param {String} ctx The transaction context.
+     */
     async viewUnsoldProducts(ctx) {
         // Retrieve all products stored in the data store.
         const results = [];
